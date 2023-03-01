@@ -5,9 +5,11 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./../src/components/HelloWorld.vue')['default']
+    DateRangePicker: typeof import('./../src/components/DateRangePicker/index.vue')['default']
     TimeRangePicker: typeof import('./../src/components/TimeRangePicker/index.vue')['default']
     VanButton: typeof import('vant/es')['Button']
+    VanPicker: typeof import('vant/es')['Picker']
+    VanPopup: typeof import('vant/es')['Popup']
   }
 }
 

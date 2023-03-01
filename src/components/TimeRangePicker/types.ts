@@ -34,7 +34,7 @@ export const props = {
     /** 最小分钟数 */
     minMinute: {
         type: Number,
-        default: 1
+        default: 0
     }
 }
 

@@ -1,3 +1,4 @@
 import TimeRangePicker from './TimeRangePicker/index.vue'
+import DateRangePicker from './DateRangePicker/index.vue'
 
-export { TimeRangePicker }
+export { TimeRangePicker, DateRangePicker }

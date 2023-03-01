@@ -1,43 +1,44 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { ref, unref, watchEffect } from 'vue'
-import { props as TimeRangePickerProps } from './types'
 import { useColumns } from './composable/useColumns'
-const props = defineProps(TimeRangePickerProps)
+import { dateRangePickerProps } from './types'
+const props = defineProps(dateRangePickerProps)
+
+const dateFormat = 'YYYY/MM/DD'
 interface Emits {
     /* 显示窗口 */
     (e: 'update:visible', value: boolean): void
     /* 更新时间段 */
-    (e: 'update:times', value: string[]): void
+    (e: 'update:dates', value: string[]): void
     /** 确认事件 */
     (e: 'confirm'): void
 }
 const emits = defineEmits<Emits>()
 
-/** 选择的值 */
 const selectedValues = ref<string[]>([])
-
 /** 窗口是否显示 */
 const popupVisible = ref(false)
 watchEffect(() => {
     popupVisible.value = props.visible
 
-    if (props.times.length > 0) {
-        if (props.times.length !== 2) {
+    if (props.dates.length > 0) {
+        if (props.dates.length !== 2) {
             // eslint-disable-next-line no-console
             console.warn('时间格式错误')
         } else {
-            /** 开始时间 分秒 */
-            const startTimes = props.times[0].split(':')
-            /** 结束时间 分秒 */
-            const endTimes = props.times[1].split(':')
-            if (startTimes.length !== 2) throw new Error('开始时间格式错误')
-            else if (endTimes.length !== 2) throw new Error('结束时间错误')
+            /** 开始 年月日 */
+            const startDate = dayjs(props.dates[0]).format(dateFormat).split('/')
+            /** 结束 年月日 */
+            const endDate = dayjs(props.dates[1]).format(dateFormat).split('/')
             selectedValues.value = [
-                startTimes[0],
-                startTimes[1],
+                startDate[0],
+                startDate[1],
+                startDate[2],
                 props.apart,
-                endTimes[0],
-                endTimes[1]
+                endDate[0],
+                endDate[1],
+                endDate[2]
             ]
         }
     }
@@ -53,13 +54,18 @@ const onPopupClose = () => {
 /** 确定按钮单击事件 */
 const onConfirm = () => {
     const onValue = unref(selectedValues.value).filter((item) => item !== props.apart)
-    emits('update:times', [`${onValue[0]}:${onValue[1]}`, `${onValue[2]}:${onValue[3]}`])
+    const format = dateFormat.replace(/\//g, '-')
+    const startDate = dayjs(`${onValue[0]}-${onValue[1]}-${onValue[2]}`).format(format)
+    const endDate = dayjs(`${onValue[3]}-${onValue[4]}-${onValue[5]}`).format(format)
+    emits('update:dates', [startDate, endDate])
     emits('confirm')
     onPopupClose()
 }
 </script>
 <script lang="ts">
-export default { name: 'TimeRangePicker' }
+export default {
+    name: 'DateRangePicker'
+}
 </script>
 
 <template>
